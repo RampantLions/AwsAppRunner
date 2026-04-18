@@ -6,10 +6,13 @@ build:
       value: /app/.venv
   commands:
     build:
-      - pip install uv
+      - pip3 install uv
       - uv sync --frozen --no-dev
 run:
   runtime-version: 3.11.14
+  pre-run:
+    - pip3 install uv
+    - uv sync --frozen --no-dev
   env:
     - name: UV_PROJECT_ENVIRONMENT
       value: /app/.venv
@@ -18,5 +21,3 @@ run:
   command: uv run uvicorn app:app --host 0.0.0.0 --port 8080 --workers 2
   network:
     port: 8080
-  observability:
-    vendor-name: AWSXRAY
