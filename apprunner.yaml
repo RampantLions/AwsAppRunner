@@ -9,7 +9,7 @@ build:
       - pip install uv
       - uv sync --frozen --no-dev
 run:
-  runtime-version: 3.11
+  runtime-version: 3.11.14
   env:
     - name: UV_PROJECT_ENVIRONMENT
       value: /app/.venv
@@ -18,12 +18,5 @@ run:
   command: uv run uvicorn app:app --host 0.0.0.0 --port 8080 --workers 2
   network:
     port: 8080
-  health-check:
-    protocol: HTTP
-    path: /health
-    interval: 10
-    timeout: 5
-    healthy-threshold: 1
-    unhealthy-threshold: 3
   observability:
     vendor-name: AWSXRAY
