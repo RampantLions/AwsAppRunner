@@ -1,17 +1,31 @@
 version: 1.0
 runtime: python3
 build:
+  env:
+    - name: UV_PROJECT_ENVIRONMENT
+      value: /app/.venv
   commands:
     build:
       - pip install uv
       - uv sync --frozen --no-dev
 run:
   runtime-version: 3.11
+  env:
+    - name: UV_PROJECT_ENVIRONMENT
+      value: /app/.venv
+    - name: ENVIRONMENT
+      value: production
+    - name: DATABASE_URL
+      value-from: "arn:aws:secretsmanager:us-east-1:ACCOUNT_ID:secret:my-app/db-url"
   command: uv run uvicorn app:app --host 0.0.0.0 --port 8080 --workers 2
   network:
     port: 8080
-    env: APP_PORT
-  env:
-    - name: ENVIRONMENT
-      value: production
-  
+  health-check:
+    protocol: HTTP
+    path: /health
+    interval: 10
+    timeout: 5
+    healthy-threshold: 1
+    unhealthy-threshold: 3
+  observability:
+    vendor-name: AWSXRAY
